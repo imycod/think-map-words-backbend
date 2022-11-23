@@ -23,7 +23,7 @@ const accessLogStream = fs.createWriteStream(
 
 
 app.use(helmet());
-app.use(logger('dev',{stream: accessLogStream}));
+app.use(logger('combined',{stream: accessLogStream}));
 app.use(express.json({limit:'50mb'}));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 app.use(cookieParser());
