@@ -28,9 +28,20 @@ fs.readdirSync(__dirname + '/rest')
     );
   })
   .forEach((file) => {
-    var model = require(path.join(__dirname + '/rest', file))(db.rest, Sequelize.DataTypes)
+    const model = require(path.join(__dirname + '/rest', file))(db.rest, Sequelize.DataTypes)
     db[model.name] = model;
   });
+
+  
+if (fs.existsSync(__dirname + '/auto')) {
+  if (fs.existsSync(__dirname + '/auto/init-models.js')) {
+    const model = require(path.join(__dirname + '/auto/init-models.js'))(db.rest)
+    Object.keys(model).forEach(key=>{
+      db[key] = model;
+    })
+  }
+}
+
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

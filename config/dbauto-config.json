@@ -1,0 +1,10 @@
+{
+    "freezeTableName": true,
+    "timestamps": true,
+    "createdAt": "createdAt",
+    "updatedAt": "updatedAt",
+    "timezone":"+8:00",
+    "dialectOptions":{
+        "useUTC":false
+    }
+}
