@@ -5,17 +5,27 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const routes = require('./routes');
+const fs=require('fs');
+const helmet=require('helmet')
 
-var app = express();
+const app = express();
 app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, './access.log'),
+  {flags: 'a'}
+);
+
+
+app.use(helmet());
+app.use(logger('dev',{stream: accessLogStream}));
+app.use(express.json({limit:'50mb'}));
+app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
