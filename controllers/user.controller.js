@@ -1,6 +1,18 @@
 const db = require('../models');
 const User = db.rest.models.user;
 
+exports.getAllUser = async (req, res) => {
+    const users = await User.findAll({ raw: true })
+    console.log('users---',users);
+    if (!users) {
+        return res.status(400).send({
+            message: `No users found`
+        })
+    }
+
+    return res.send(users);
+}
+
 exports.getUser = async (req, res) => {
 
     const { id } = req.params;

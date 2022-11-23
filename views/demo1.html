@@ -8,7 +8,32 @@
 
 <body>
     <div id="root">
-        <button @click="send">send</button>
+        <div>
+            <h3>add</h3>
+            <input type="text" v-model="user.username">
+            <input type="text" v-model="user.password">
+            <button @click="add">add</button>
+        </div>
+        <div>
+            <h3>find</h3>
+            <ul>
+                <li v-for="item in items" :key="item.id">
+                    {{ item.id }} -- {{ item.username }} -- {{ item.password }}
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h3>change</h3>
+            <input type="text" v-model="user.id">
+            <input type="text" v-model="user.username">
+            <input type="text" v-model="user.password">
+            <button @click="change">change</button>
+        </div>
+        <div>
+            <h3>delete user by id</h3>
+            <input type="text" v-model="user.id">
+            <button @click="dels">del</button>
+        </div>
     </div>
     <script src='https://cdn.bootcss.com/vue/2.5.16/vue.min.js'></script>
     <script>
@@ -16,26 +41,83 @@
             el: '#root',
             data() {
                 return {
-                    msg: 'aaa'
+                    user: {
+                        id: '',
+                        username: '',
+                        password: '',
+                    },
+                    items: [], // users all
                 }
             },
+            created() {
+                this.findAll()
+            },
             methods: {
-                send() {
+                findAll() {
+                    fetch('http://127.0.0.1:8080/user/all', {})
+                        .then(res => {
+                            return res.json()
+                        }).then(data => {
+                            this.items = data
+                        })
+                },
+                dels() {
+                    fetch('http://127.0.0.1:8080/user/delete', {
+                        method: 'post',
+                        body: JSON.stringify({
+                            id: Number(this.user.id),
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(res => {
+                            return res.json()
+                        }).then(data => {
+                            this.findAll()
+                            this.user.id = ""
+                        })
+                },
+                change() {
+                    const id = this.user.id
+                    fetch(`http://127.0.0.1:8080/user/update/${id}`, {
+                        method: 'post',
+                        body: JSON.stringify({
+                            username: this.user.username,
+                            password: this.user.password
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(res => {
+                            return res.json()
+                        }).then(data => {
+                            this.findAll()
+                            this.user={}
+                        })
+                },
+                add() {
                     fetch('http://127.0.0.1:8080/user/create', {
                         method: 'post',
                         body: JSON.stringify({
-                            username: 'asdeee',
-                            password: '123'
+                            username: this.user.username,
+                            password: this.user.password
                         }),
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     }).then(res => {
                         return res.json()
-                    }).then(data=>{
-                        console.log(data);
+                    }).then(data => {
+                        this.findAll()
+                        this.resetUserInput()
                     })
                 },
+                resetUserInput() {
+                    this.user.username = ""
+                    this.user.password = ""
+                }
             },
         })
     </script>

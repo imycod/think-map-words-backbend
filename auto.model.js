@@ -2,7 +2,6 @@
 const child_process = require('child_process');
 const env = process.env.NODE_ENV || 'development';
 const {databases} = require(__dirname + '/config/db.config.js')[env];
-console.log('databases----',databases);
 const { exec } = child_process;
 const modelName = process.argv[2];
 const database = {
@@ -17,7 +16,7 @@ const database = {
     // 数据库端口号
     port: databases.rest.port,
     // Sequelize的构造函数“options”标记对象的JSON文件路径
-    config: './config/dbauto-config.json',
+    config: './config/db-auto-config.json',
     // 输出文件路径
     output: './models/auto',
     // 数据库类型：postgres, mysql, sqlite
