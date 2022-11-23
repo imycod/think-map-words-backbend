@@ -11,13 +11,12 @@ const databases = Object.keys(config.databases);
 
 for (let i = 0; i < databases.length; i++) {
   let database = databases[i];
-  console.log('database------',database);
   let dbPath = config.databases[database];
   db[database] = new Sequelize(
     dbPath.database,
     dbPath.username,
     dbPath.password,
-    dbPath
+    dbPath,
   );
 }
 
@@ -29,7 +28,7 @@ fs.readdirSync(__dirname + '/rest')
     );
   })
   .forEach((file) => {
-    var model =  require(path.join(__dirname + '/rest', file))(db.rest,Sequelize.DataTypes)
+    var model = require(path.join(__dirname + '/rest', file))(db.rest, Sequelize.DataTypes)
     db[model.name] = model;
   });
 
