@@ -1,10 +1,10 @@
-const bcrypt=require("bcryptjs")
+const bcrypt = require("bcryptjs")
 const db = require('../models');
 const User = db.rest.models.user;
 
 exports.getAllUser = async (req, res) => {
     const users = await User.findAll({ raw: true })
-    
+
     if (!users) {
         return res.status(400).send({
             message: `No users found`
@@ -14,16 +14,23 @@ exports.getAllUser = async (req, res) => {
     return res.send(users);
 }
 
-exports.getUsername=async (req,res)=>{
+// 05.test session and jwt
+exports.getUsername = async (req, res) => {
     // 03：请从 Session 中获取用户的名称，响应给客户端
-  if (!req.session.islogin) {//此处就进行了鉴权，看用户的cookie是否有我们之前发送给他的islogin字段。
-    return res.send({ status: 1, msg: 'fail' })
-  }
-  res.send({
-    status: 0,
-    msg: 'success',
-    username: req.session.user.username,
-  })
+    //   if (!req.session.islogin) {//此处就进行了鉴权，看用户的cookie是否有我们之前发送给他的islogin字段。
+    //     return res.send({ status: 1, msg: 'fail' })
+    //   }
+    //   res.send({
+    //     status: 0,
+    //     msg: 'success',
+    //     username: req.session.user.username,
+    //   })
+
+    res.send({
+        status: 200,
+        message: '获取用户信息成功！',
+        data: req.user, // 要发送给客户端的用户信息
+    })
 }
 
 exports.getUserById = async (req, res) => {
@@ -47,7 +54,7 @@ exports.getUserById = async (req, res) => {
 
 };
 
-exports.getUserByEmail= async (req)=>{
+exports.getUserByEmail = async (req) => {
     const { email } = req.body;
     if (!email) {
         return res.status(400).send({
@@ -91,7 +98,7 @@ exports.createUser = async (req, res) => {
         })
     }
 
-    
+
     let emailExists = await User.findOne({
         where: {
             email
@@ -107,7 +114,7 @@ exports.createUser = async (req, res) => {
     try {
         let newUser = await User.create({
             username,
-            password:bcrypt.hashSync(password,10),
+            password: bcrypt.hashSync(password, 10),
             email,
         });
         return res.send(newUser);

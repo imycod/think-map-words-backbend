@@ -5,7 +5,10 @@ const router = Router();
 
 // Routes go here
 router.get('/all', userController.getAllUser);
+
+// 05.test session
 router.get('/username', userController.getUsername);
+
 router.get('/:id', userController.getUserById);
 router.post('/create', userController.createUser);
 router.post('/delete', userController.deleteUser);
