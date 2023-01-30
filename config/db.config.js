@@ -3,7 +3,7 @@ module.exports = {
     development: {
         databases: {
             rest: {
-                database: 'think_map_word',
+                database: 'vocabulary',
                 username: 'root',
                 password: 'mWXS19971222',
                 host: '127.0.0.1',

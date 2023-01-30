@@ -5,6 +5,7 @@ const router = Router();
 
 // Routes go here
 router.post('/create', mynode.createNode);
+router.get('/findall', mynode.findAll);
 
 
 module.exports = router;

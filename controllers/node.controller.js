@@ -35,3 +35,15 @@ exports.createNode = async (req, res) => {
         });
     }
 }
+
+exports.findAll=async (req, res)=>{
+    const nodes = await Nodes.findAll({ raw: true })
+    
+    if (!nodes) {
+        return res.status(400).send({
+            message: `No nodes found`
+        })
+    }
+
+    return res.send(nodes);
+}

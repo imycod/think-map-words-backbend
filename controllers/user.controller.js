@@ -1,3 +1,4 @@
+const bcrypt=require("bcryptjs")
 const db = require('../models');
 const User = db.rest.models.user;
 
@@ -13,7 +14,19 @@ exports.getAllUser = async (req, res) => {
     return res.send(users);
 }
 
-exports.getUser = async (req, res) => {
+exports.getUsername=async (req,res)=>{
+    // 03：请从 Session 中获取用户的名称，响应给客户端
+  if (!req.session.islogin) {//此处就进行了鉴权，看用户的cookie是否有我们之前发送给他的islogin字段。
+    return res.send({ status: 1, msg: 'fail' })
+  }
+  res.send({
+    status: 0,
+    msg: 'success',
+    username: req.session.user.username,
+  })
+}
+
+exports.getUserById = async (req, res) => {
 
     const { id } = req.params;
 
@@ -34,12 +47,35 @@ exports.getUser = async (req, res) => {
 
 };
 
-exports.createUser = async (req, res) => {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
+exports.getUserByEmail= async (req)=>{
+    const { email } = req.body;
+    if (!email) {
         return res.status(400).send({
-            message: "You need to include a username and password create a user"
+            message: "You need to include a email find a user"
+        });
+    }
+
+    const user = await User.findOne({
+        where: {
+            email
+        }
+    });
+
+    if (!user) {
+        return res.status(400).send({
+            message: `No user found with the email ${email}`
+        })
+    }
+
+    return user;
+}
+
+exports.createUser = async (req, res) => {
+    const { username, password, email } = req.body;
+
+    if (!username || !password || !email) {
+        return res.status(400).send({
+            message: "You need to include a username and password and email create a user"
         });
     }
 
@@ -55,10 +91,24 @@ exports.createUser = async (req, res) => {
         })
     }
 
+    
+    let emailExists = await User.findOne({
+        where: {
+            email
+        }
+    });
+
+    if (emailExists) {
+        return res.status(400).send({
+            message: `A user with the username ${email} already exists`
+        })
+    }
+
     try {
         let newUser = await User.create({
             username,
-            password
+            password:bcrypt.hashSync(password,10),
+            email,
         });
         return res.send(newUser);
     } catch (e) {

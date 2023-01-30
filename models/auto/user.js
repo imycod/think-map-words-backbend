@@ -9,17 +9,20 @@ module.exports = function(sequelize, DataTypes) {
     },
     username: {
       type: DataTypes.STRING(255),
-      allowNull: true,
-      unique: "username"
+      allowNull: true
     },
     password: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: false
+    },
+    email: {
+      type: DataTypes.STRING(255),
+      allowNull: false
     }
   }, {
     sequelize,
     tableName: 'user',
-    timestamps: true,
+    timestamps: false,
     indexes: [
       {
         name: "PRIMARY",
@@ -27,14 +30,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
-        ]
-      },
-      {
-        name: "username",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "username" },
         ]
       },
     ]
