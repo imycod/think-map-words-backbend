@@ -1,9 +1,9 @@
 const user = require('./user.js')
-const node = require('./node.js')
+const network = require('./network.js')
 const register = require('./register.js')
 
 module.exports = {
-  user, // example
-  node,
+  user,
+  network,
   register,
 }

@@ -2,31 +2,30 @@ const db = require('../models');
 const Nodes = db.rest.models.nodes;
 
 exports.createNode = async (req, res) => {
-    const { category, value, name,x,y } = req.body;
-    if (!category || !value || !name) {
+    const {id, label, partId, value} = req.body;
+    if (!partId || !value || !label) {
         return res.status(400).send({
-            message: "You need to include a category and value and name create a node"
+            message: "You need to include a partId and value and label create a node"
         });
     }
     let nodenameExists = await Nodes.findOne({
         where: {
-            name
+            value
         }
     });
 
     if (nodenameExists) {
         return res.status(400).send({
-            message: `A user with the node ${name} already exists`
+            message: `A user with the node ${value} already exists`
         })
     }
 
     try {
         let newNode = await Nodes.create({
-            name,
+            id,
             value,
-            category,
-            x,
-            y,
+            label,
+            partId,
         });
         return res.send(newNode);
     } catch (e) {
@@ -36,14 +35,52 @@ exports.createNode = async (req, res) => {
     }
 }
 
-exports.findAll=async (req, res)=>{
-    const nodes = await Nodes.findAll({ raw: true })
-    
-    if (!nodes) {
-        return res.status(400).send({
-            message: `No nodes found`
-        })
-    }
+exports.findNodeByLabel = async (req, res) => {
+    const label = req.params.label;
 
-    return res.send(nodes);
+    Nodes.findOne({
+        where: {
+            label: label,
+        },
+    }, (err, nodes) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send(err);
+        }
+        res.send({
+            code: 0,
+            result: nodes
+        });
+    });
+}
+
+exports.findNodes = async (req, res) => {
+    Nodes.findAll()
+        .then((nodes) => {
+            res.send({
+                code: 0,
+                result: nodes
+            });
+        })
+        .catch((err) => {
+            console.error('Unable to find nodes:', err);
+        });
+}
+
+exports.updateNode = async (req, res) => {
+    const {id, label, partId, value} = req.body;
+    Nodes.update(
+        {id, label, partId, value},
+        {
+            where: {
+                id: id,
+            },
+        }
+    )
+        .then((result) => {
+            console.log(`${result[0]} rows updated.`);
+        })
+        .catch((err) => {
+            console.error('Unable to update nodes:', err);
+        });
 }

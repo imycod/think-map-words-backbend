@@ -2,28 +2,19 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('nodes', {
     id: {
-      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    name: {
+    value: {
       type: DataTypes.STRING(255),
       allowNull: true
     },
-    value: {
-      type: DataTypes.INTEGER,
+    label: {
+      type: DataTypes.STRING(255),
       allowNull: true
     },
-    category: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    x: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    y: {
+    partId: {
       type: DataTypes.INTEGER,
       allowNull: true
     }

@@ -1,22 +1,22 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('links', {
+  return sequelize.define('parts', {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    source: {
-      type: DataTypes.INTEGER,
+    label: {
+      type: DataTypes.STRING(255),
       allowNull: true
     },
-    target: {
-      type: DataTypes.INTEGER,
+    base: {
+      type: DataTypes.STRING(255),
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'links',
+    tableName: 'parts',
     timestamps: false,
     indexes: [
       {
