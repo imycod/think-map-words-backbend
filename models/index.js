@@ -21,16 +21,16 @@ for (let i = 0; i < databases.length; i++) {
 }
 
 /**Add the Database Models**/
-fs.readdirSync(__dirname + '/rest')
-  .filter((file) => {
-    return (
-      file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'
-    );
-  })
-  .forEach((file) => {
-    const model = require(path.join(__dirname + '/rest', file))(db.rest, Sequelize.DataTypes)
-    db[model.name] = model;
-  });
+// fs.readdirSync(__dirname + '/rest')
+//   .filter((file) => {
+//     return (
+//       file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'
+//     );
+//   })
+//   .forEach((file) => {
+//     const model = require(path.join(__dirname + '/rest', file))(db.rest, Sequelize.DataTypes)
+//     db[model.name] = model;
+//   });
 
   
 if (fs.existsSync(__dirname + '/auto')) {

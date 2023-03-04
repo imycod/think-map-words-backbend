@@ -2,32 +2,30 @@ const db = require('../models');
 const Nodes = db.rest.models.nodes;
 
 exports.createNode = async (req, res) => {
-    const {id, label, partId, value} = req.body;
-    if (!partId || !value || !label) {
+    const {value,label,id}=req.body
+    if (!value || !label || !id) {
         return res.status(400).send({
-            message: "You need to include a partId and value and label create a node"
+            message: "请输入需包含单词的id和单词"
         });
     }
-    let nodenameExists = await Nodes.findOne({
+    let exists = await Nodes.findOne({
         where: {
             value
         }
     });
 
-    if (nodenameExists) {
+    if (exists) {
         return res.status(400).send({
-            message: `A user with the node ${value} already exists`
+            message: `这个单词 ${value} 已经存在了`
         })
     }
 
     try {
-        let newNode = await Nodes.create({
-            id,
-            value,
-            label,
-            partId,
+        let newNode = await Nodes.create(req.body);
+        return res.send({
+            code:200,
+            result: newNode
         });
-        return res.send(newNode);
     } catch (e) {
         return res.status(500).send({
             message: `Error: ${e.message}`
@@ -55,16 +53,16 @@ exports.findNodeByLabel = async (req, res) => {
 }
 
 exports.findNodes = async (req, res) => {
-    Nodes.findAll()
-        .then((nodes) => {
-            res.send({
-                code: 0,
-                result: nodes
-            });
-        })
-        .catch((err) => {
-            console.error('Unable to find nodes:', err);
+      try {
+        const nodes = await Nodes.findAll();
+        console.log('nodes----',nodes);
+        res.send({
+            code: 200,
+            result: nodes
         });
+    } catch (err) {
+        console.error('Unable to find nodes:', err);
+    }
 }
 
 exports.updateNode = async (req, res) => {
